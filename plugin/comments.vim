@@ -108,7 +108,7 @@ function! CommentLine()
 
   " for .cpp or .hpp or .java or .C files use //
   if file_name =~ '\.cpp$' || file_name =~ '\.hpp$' || file_name =~ '\.java$' || file_name =~ '\.php[2345]\?$' || file_name =~ '\.C$'
-    execute ":silent! normal ^i//\<ESC>==\<down>^"
+    execute ":silent! normal 0i//\<ESC>==\<down>^"
   " for .c or .h or .pc or .css files use /* */
   elseif file_name =~ '\.c$' || file_name =~ '\.h$' || file_name =~ '\.pc$' || file_name =~ '\.css$' || file_name =~ '\.js$'
     " if there are previous comments on this line ie /* ... */
@@ -122,48 +122,48 @@ function! CommentLine()
       execute ":silent! normal :nohlsearch\<CR>:s/\\(.*\\*\\/\\)/\\/\\*\\1/\<CR>:nohlsearch\<CR>=="
     " if there are no comments on this line
     elseif stridx(getline("."), "\/\*") == -1 && stridx(getline("."), "\*\/") == -1
-      execute ":silent! normal ^i/*\<ESC>$a*/\<ESC>==\<down>^"
+      execute ":silent! normal 0i/*\<ESC>$a*/\<ESC>==\<down>^"
     endif
   "for .ml or .mli files use (* *)
   elseif file_name =~ '\.ml$' || file_name =~ '\.mli$'
     if stridx(getline("."), "\(\*") == -1 && stridx(getline("."), "\*)") == -1
-      execute ":silent! normal ^i(*\<ESC>$a*)\<ESC>==\<down>^"
+      execute ":silent! normal 0i(*\<ESC>$a*)\<ESC>==\<down>^"
     endif
     " .html,.xml,.xthml,.htm
   elseif file_name =~ '\.html$' || file_name =~ '\.htm$' || file_name =~ '\.xml$' || file_name =~ '\.xhtml$' 
     if stridx( getline("."), "\<!--" ) != -1 && stridx( getline("."), "--\>" ) != -1
     elseif stridx( getline("."), "\<!--" ) != -1 && stridx( getline("."), "--\>" ) == -1
         "  open, but a close "
-       execute ":silent! normal ^A--\>\<ESC>==\<down>^"
+       execute ":silent! normal 0A--\>\<ESC>==\<down>^"
     elseif stridx( getline("."), "\<!--" ) == -1 && stridx( getline("."), "--\>" ) != -1
-       execute ":silent! normal ^i\<\!--\<ESC>==\<down>^"
+       execute ":silent! normal 0i\<\!--\<ESC>==\<down>^"
     elseif stridx( getline("."), "\<!--" ) == -1 && stridx( getline("."), "--\>" ) == -1
-       execute ":silent! normal ^i\<\!--\<ESC>$a--\>\<ESC>==\<down>^"
+       execute ":silent! normal 0i\<\!--\<ESC>$a--\>\<ESC>==\<down>^"
     endif
   " for .vim files use "
   elseif file_name =~ '\.vim$' || file_name =~ '\.vimrc$'
-	 execute ":silent! normal ^i\"\<ESC>\<down>^"
+	 execute ":silent! normal 0i\"\<ESC>\<down>^"
   " for .sql files use --
   elseif file_name =~ '\.sql$'
-    execute ":silent! normal ^i--\<ESC>\<down>^"
+    execute ":silent! normal 0i--\<ESC>\<down>^"
   " for .ksh or .sh or .csh or .pl or .pm files use #
   elseif file_name =~ '\.[kc]\?sh$' || file_name =~ '\.pl$' || file_name =~ '\.pm$'
-    execute ":silent! normal ^i#\<ESC>\<down>^"
+    execute ":silent! normal 0i#\<ESC>\<down>^"
   " for .tex files use %
   elseif file_name =~ '\.tex$' || file_name =~ '\.nw$'
-    execute ":silent! normal ^i%\<ESC>\<down>^"
+    execute ":silent! normal 0i%\<ESC>\<down>^"
   " for fortran 77 files use C on first column 
   elseif file_name =~ '\.f$' || file_name =~ '\.F$'
-    execute ":silent! normal ^gIC\<ESC>\<down>^"
+    execute ":silent! normal 0gIC\<ESC>\<down>^"
   " for fortran 90/95 files use !
   elseif file_name =~ '\.f90$' || file_name =~ '\.F90$' || file_name =~ '\.f95$' || file_name =~ '\.F95$'
-    execute ":silent! normal ^i!\<ESC>\<down>^"
+    execute ":silent! normal 0i!\<ESC>\<down>^"
   " for VHDL and Haskell files use -- 
   elseif file_name =~ '\.vhd$' || file_name =~ '\.vhdl$' || file_name =~ '\.hs$'
-    execute ":silent! normal ^gI-- \<ESC>\<down>^"
+    execute ":silent! normal 0gI-- \<ESC>\<down>^"
   " for all other files use # 
   else
-    execute ":silent! normal ^i#\<ESC>\<down>^"
+    execute ":silent! normal 0i#\<ESC>\<down>^"
   endif
 endfunction
 
@@ -273,7 +273,7 @@ function! RangeCommentLine()
     execute ":silent! normal ^gI-- \<ESC>\<down>^"
   " for all other files use #  
   else
-    execute ":silent! normal :s/\\S/\\#\\0/\<CR>:nohlsearch<CR>"
+    execute ":silent! normal :s/^\\(\\s*\\)/\\#\\0/\<CR>:nohlsearch<CR>"
   endif
 endfunction
 
@@ -308,7 +308,7 @@ function! RangeUnCommentLine()
     execute ":silent! normal :s/%/\<CR>:nohlsearch\<CR>"
   " for fortran 77 files use C on first column 
   elseif file_name =~ '\.f$' || file_name =~ '\.F$'
-    execute ":silent! normal ^x\<ESC>\<down>^"
+    execute ":silent! normal 0x\<ESC>\<down>^"
   " for fortran 90/95 files use !
   elseif file_name =~ '\.f90$' || file_name =~ '\.F90$' || file_name =~ '\.f95$' || file_name =~ '\.F95$'
     execute ":silent! normal :s/!//\<CR>:nohlsearch\<CR>"
